@@ -5,13 +5,13 @@ import PropTypes from "prop-types";
 
 import TableDropdown from "components/Dropdowns/TableDropdown.js";
 
-export default function CardTable({ color }) {
+export default function CardArticles({ color }) {
   return (
     <>
       <div
         className={
           "relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded " +
-          (color === "light" ? "bg-white" : "bg-blueGray-700 text-white")
+          (color === "light" ? "bg-white text-blueGray-700" : "bg-blueGray-700 text-white")
         }
       >
         <div className="rounded-t mb-0 px-4 py-3 border-0">
@@ -420,10 +420,10 @@ export default function CardTable({ color }) {
   );
 }
 
-CardTable.defaultProps = {
+CardArticles.defaultProps = {
   color: "light",
 };
 
-CardTable.propTypes = {
+CardArticles.propTypes = {
   color: PropTypes.oneOf(["light", "dark"]),
 };
