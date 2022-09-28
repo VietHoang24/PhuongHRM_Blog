@@ -8,7 +8,7 @@ import React from 'react'
 import NewsletterForm from '@/components/NewsletterForm'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { getArticle } from './api/article'
+import { getArticle } from '../api/article'
 import LayoutWrapper from '@/components/LayoutWrapper'
 const MAX_DISPLAY = 5
 export async function getStaticProps() {

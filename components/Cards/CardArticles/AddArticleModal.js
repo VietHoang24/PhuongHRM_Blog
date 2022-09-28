@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import 'antd/dist/antd.css'
 import { Button, Modal, Form, Input, InputNumber, Row, Col } from 'antd'
+import BasicInput from '@/components/antd/Input'
+import { addArticleRequest } from 'api/article'
 
 const layout = {
   labelCol: {
@@ -24,114 +26,78 @@ const validateMessages = {
 }
 const AddArticleModal = (props) => {
   const { open, setOpen } = props
-  const [confirmLoading, setConfirmLoading] = useState(false)
   const [modalText, setModalText] = useState('Content of the modal')
-
-  const showModal = () => {
-    setOpen(true)
-  }
-
+  const [form] = Form.useForm();
+  const { mutate: addArticle, isLoading: isLoading } = addArticleRequest();
   const handleOk = () => {
-    setModalText('The modal will be closed after two seconds')
-    setConfirmLoading(true)
-    setTimeout(() => {
-      setOpen(false)
-      setConfirmLoading(false)
-    }, 2000)
+    form.submit()
   }
-
   const handleCancel = () => {
-    console.log('Clicked cancel button')
     setOpen(false)
   }
-
   const onFinish = (values) => {
-    console.log(values)
+    addArticle(values)
+    if(!isLoading) {
+    } setOpen(false)
+      props.refetch
   }
+  console.log(process.env.SERVER_URL)
   return (
     <>
       <Modal
-        title="Title"
+        title="Add Articles"
         open={open}
         onOk={handleOk}
-        confirmLoading={confirmLoading}
         onCancel={handleCancel}
+        width={1000}
+        footer={[
+          <Row justify='end'>
+            <Button form="addArticlesForm" key="submit"   
+              onClick={handleCancel}
+            >
+              Hủy
+          </Button>
+          <Button loading={isLoading} type= "primary" form="addArticlesForm" key="submit" htmlType="submit">
+              Thêm
+          </Button>
+          </Row>
+          
+          ]}
+        
       >
-        <Form
+       {open&&<Form
           {...layout}
-          name="nest-messages"
+          name="addArticlesForm"
           onFinish={onFinish}
           validateMessages={validateMessages}
           layout="vertical"
           compact
+          form={form}
+
         >
           <Row>
             <Col span={24}>
-              <Form.Item
-                name={['user', 'name']}
-                label="Name"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <Form.Item
-                name={['user', 'email']}
-                label="Email"
-                rules={[
-                  {
-                    type: 'email',
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name={['user', 'age']}
-                label="Age"
-                rules={[
-                  {
-                    type: 'number',
-                    min: 0,
-                    max: 99,
-                  },
-                ]}
-              >
-                <InputNumber />
-              </Form.Item>
-              <Form.Item name={['user', 'website']} label="Website">
-                <Input />
-              </Form.Item>
-              <Form.Item name={['user', 'introduction']} label="Introduction">
-                <Input.TextArea />
-              </Form.Item>
-              <Form.Item wrapperCol={{ ...layout.wrapperCol }}>
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-              </Form.Item>
-              <Form.Item label="Field A" required tooltip="This is a required field">
-                <Input placeholder="input placeholder" />
-              </Form.Item>
-              <Form.Item
-                label="Field B"
-                tooltip={{
-                  title: 'Tooltip with customize icon',
-                }}
-              >
-                <Input placeholder="input placeholder" />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary">Submit</Button>
-              </Form.Item>
+              <BasicInput value= {form.getFieldValue("title")}
+              
+              label={"Tiêu đề"} required={true} name="title"  useLabel
+              />
+              <BasicInput label={"Tóm tắt"} required={true} name="sumary" useLabel type="textarea"
+              />
+              <BasicInput label={"Nội dung"} required={true} name="content"
+               useLabel type="textarea"
+               inputStyle={{height:"200px"}}
+              />
+               <BasicInput label={"Tags"} name="tag" useLabel
+              />
+               <BasicInput label={"Ảnh"}  name="image" useLabel
+              />  
+              <BasicInput label={"Tác giả"}  name="author" useLabel
+              />
+               <BasicInput label={"Slug"} name="slug" useLabel
+              />
             </Col>
           </Row>
-        </Form>
+        </Form>}
       </Modal>
     </>
   )

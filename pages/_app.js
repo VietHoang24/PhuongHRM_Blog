@@ -2,7 +2,7 @@ import '@/css/tailwind.css'
 import '@/css/prism.css'
 import 'katex/dist/katex.css'
 import "styles/tailwind.css";
-
+import 'styles/global.css'
 
 import '@fontsource/inter/variable-full.css'
 import "@fortawesome/fontawesome-free/css/all.min.css";

@@ -4,12 +4,12 @@ import { IoMdAddCircleOutline } from 'react-icons/io'
 // components
 
 import TableDropdown from 'components/Dropdowns/TableDropdown.js'
-import { getArticle } from 'pages/api/article'
+import { getArticle } from 'api/article'
 import AddArticleModal from './AddArticleModal'
 import { Modal } from 'antd'
 
 export default function CardTable({ color }) {
-  const { data: dataList } = getArticle()
+  const { data: dataList, refetch } = getArticle()
   console.log('data là: ', dataList?.data)
   const [open, setOpen] = useState(false)
   return (
@@ -187,7 +187,7 @@ export default function CardTable({ color }) {
             </tbody>
           </table>
         </div>
-        <AddArticleModal open={open} setOpen={setOpen} />
+        <AddArticleModal open={open} setOpen={setOpen} refetcch={()=>refetch()} />
       </div>{' '}
     </>
   )
