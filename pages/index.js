@@ -18,11 +18,7 @@ export async function getStaticProps() {
 }
 
 const Home =({ posts }) =>{
-  // const{}
-  // const {data:dataList} = getArticle();
-  // console.log("data là: ",dataList)
-  // const dataPage= dataList?.data
-  console.log(posts)
+
   return (
     <div> 
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />

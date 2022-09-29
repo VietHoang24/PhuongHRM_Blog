@@ -5,3 +5,16 @@
 .ant-input{
     border-radius: 5px !important;
 }
+.ant-pagination-prev .ant-pagination-item-link{
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+.ant-pagination-next .ant-pagination-item-link{
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+.ant-table-pagination.ant-pagination {
+    margin: 16px 16px !important;
+}

@@ -1,24 +1,149 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { IoMdAddCircleOutline } from 'react-icons/io'
 // components
+import { Space, Table, Tag } from 'antd';
 
 import TableDropdown from 'components/Dropdowns/TableDropdown.js'
-import { getArticle } from 'api/article'
-import AddArticleModal from './AddArticleModal'
+import { addArticleRequest, deleteArticleRequest, getArticle } from 'api/article'
+import ArticleModal from './ArticleModal'
 import { Modal } from 'antd'
+import MenuOptions from '@/components/MenuOpstions';
+import { notification } from 'antd';
+import NotifyPopup from '@/components/NotifyPopup';
+
 
 export default function CardTable({ color }) {
   const { data: dataList, refetch } = getArticle()
   console.log('data là: ', dataList?.data)
-  const [open, setOpen] = useState(false)
+  const [openAddModal, setOpenAddModal] = useState(false)
+  const [openEditModal,setOpenEditModal]= useState(false)
+  const refDeleteArticle = useRef();
+  const [visibleDelete,setVisibleDelete]=useState(false)
+  const columns = [
+    {
+      title: 'Tiêu đề',
+      dataIndex: 'title',
+      key: 'name',
+      render: (text) => <a onClick={()=>setOpenEditModal(true)}>{text}</a>,
+    },
+    {
+      title: 'Tóm tắt',
+      dataIndex: 'sumary',
+      key: 'age',
+    },
+    {
+      title: 'Tags',
+      key: 'tags',
+      dataIndex: 'tags',
+      render: (_, { tags }) => (
+        <>
+          {tags?.map((tag) => {
+            let color = tag.length > 5 ? 'geekblue' : 'green';
+  
+            if (tag === 'loser') {
+              color = 'volcano';
+            }
+  
+            return (
+              <Tag color={color} key={tag}>
+                {tag.toUpperCase()}
+              </Tag>
+            );
+          })}
+        </>
+      ),
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'date',
+      key: 'address',
+    },
+  
+    {
+      title: 'Action',
+      key: 'action',
+      fixed: 'right',
+      // align:"right",
+      render: ( record) => {
+        let actions = [
+          {
+            key: "edit",
+            label: "Sửa bài viết",
+          },
+          {
+            key: "delete",
+            label: <span className='text-red-500 w-[100px]'>Xóa bài viết</span>,
+          },
+        ];
+        return<MenuOptions 
+          trigger={['hover']}
+          items={actions}
+          itemSelected={record}
+          itemHandler={handleAction}
+
+        />         
+      }
+  
+    },
+  ];
+  const handleAction = (
+    e,
+    itemSelected,
+  ) => {
+    switch (e.key) {
+      case "edit": {
+        setOpenEditModal(true)
+        refDeleteArticle.current = itemSelected;
+        break;
+      }
+      case "delete": {
+        setVisibleDelete(true)
+        refDeleteArticle.current = itemSelected;
+      }
+    }
+  };
+  const { mutate: deleteArticle, isLoading: isLoadingDelete } = deleteArticleRequest({    
+    onSuccess: () => {
+      notification.success({message:"Xóa thành công"})
+      refetch()
+    },
+    onError: () => {
+      notification.error({message:"Xóa không thành công"})
+      
+    },
+  })
+  const handleDelete= ()=>{
+    let itemSelected=refDeleteArticle.current;
+    deleteArticle({id:itemSelected._id})
+    setVisibleDelete(false)
+  }
+  const handleOpenAddModal=()=>{
+    console.log("ahhuh")
+    setOpenAddModal(true);
+  }
+  const { mutate: addArticle, isLoading: isLoadingAdd } = addArticleRequest({    
+    onSuccess: () => {
+    refetch()
+  },
+  onError: error => {
+    console.log(error)
+  },});
+
+  const onFinishAdd = (values) => {
+    addArticle(values)
+    if(!isLoadingAdd) {
+      setOpenAddModal(false)
+    }
+  }
   return (
     <>
       <div
         className={
-          'relative mb-6 flex w-full min-w-0 flex-col break-words rounded shadow-lg ' +
+          'relative mb-6 flex w-full min-w-0 flex-col break-words rounded shadow-lg h-[700px]' +
           (color === 'light' ? 'text-blueGray-700 bg-white' : 'bg-blueGray-700 text-white')
         }
+        // style={{height:"500px", overflow:"hidden"}}
       >
         <div className="mb-0 rounded-t border-0 px-4 py-3">
           <div className="flex flex-wrap items-center">
@@ -32,162 +157,45 @@ export default function CardTable({ color }) {
                 Quản lý bài viết
               </h3>
               <div className="cursor-pointer">
-                <IoMdAddCircleOutline size="30px" color="#1e293b" onClick={() => setOpen(true)} />
+                <IoMdAddCircleOutline size="30px" color="#1e293b" onClick={handleOpenAddModal} />
               </div>
             </div>
           </div>
         </div>
         <div className="block w-full overflow-x-auto">
           {/* Projects table */}
-          <table className="w-full border-collapse items-center bg-transparent">
-            <thead>
-              <tr>
-                <th
-                  className={
-                    'whitespace-nowrap border border-l-0 border-r-0 border-solid px-6 py-3 text-left align-middle text-xs font-semibold uppercase ' +
-                    (color === 'light'
-                      ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                      : 'bg-blueGray-600 text-blueGray-200 border-blueGray-500')
-                  }
-                >
-                  Tiêu đề
-                </th>
-                <th
-                  className={
-                    'whitespace-nowrap border border-l-0 border-r-0 border-solid px-6 py-3 text-left align-middle text-xs font-semibold uppercase ' +
-                    (color === 'light'
-                      ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                      : 'bg-blueGray-600 text-blueGray-200 border-blueGray-500')
-                  }
-                >
-                  Tóm tắt
-                </th>
-                <th
-                  className={
-                    'whitespace-nowrap border border-l-0 border-r-0 border-solid px-6 py-3 text-left align-middle text-xs font-semibold uppercase ' +
-                    (color === 'light'
-                      ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                      : 'bg-blueGray-600 text-blueGray-200 border-blueGray-500')
-                  }
-                >
-                  Tag
-                </th>
-                <th
-                  className={
-                    'whitespace-nowrap border border-l-0 border-r-0 border-solid px-6 py-3 text-left align-middle text-xs font-semibold uppercase ' +
-                    (color === 'light'
-                      ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                      : 'bg-blueGray-600 text-blueGray-200 border-blueGray-500')
-                  }
-                >
-                  Ngày tạo
-                </th>
-                <th
-                  className={
-                    'whitespace-nowrap border border-l-0 border-r-0 border-solid px-6 py-3 text-left align-middle text-xs font-semibold uppercase ' +
-                    (color === 'light'
-                      ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                      : 'bg-blueGray-600 text-blueGray-200 border-blueGray-500')
-                  }
-                >
-                  Completion
-                </th>
-                <th
-                  className={
-                    'whitespace-nowrap border border-l-0 border-r-0 border-solid px-6 py-3 text-left align-middle text-xs font-semibold uppercase ' +
-                    (color === 'light'
-                      ? 'bg-blueGray-50 text-blueGray-500 border-blueGray-100'
-                      : 'bg-blueGray-600 text-blueGray-200 border-blueGray-500')
-                  }
-                ></th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataList?.data.map((item) => {
-                return (
-                  <tr key={item.id}>
-                    <th className="flex items-center whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 text-left align-middle text-xs">
-                      <span
-                        className={
-                          'ml-3 font-bold ' +
-                          +(color === 'light' ? 'text-blueGray-600' : 'text-white')
-                        }
-                      >
-                        {item.title}
-                      </span>
-                    </th>
-                    <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 align-middle text-xs">
-                      {item.sumary}
-                    </td>
-                    <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 align-middle text-xs">
-                      {item.tag?.map((tagItem) => {
-                        ;<span>{tagItem}</span>
-                      })}
-                    </td>
-                    <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 align-middle text-xs">
-                      {item.date}
-                    </td>
-                    <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 align-middle text-xs">
-                      <div className="flex items-center">
-                        <span className="mr-2">60%</span>
-                        <div className="relative w-full">
-                          <div className="flex h-2 overflow-hidden rounded bg-red-200 text-xs">
-                            <div
-                              style={{ width: '60%' }}
-                              className="flex flex-col justify-center whitespace-nowrap bg-red-500 text-center text-white shadow-none"
-                            ></div>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 text-right align-middle text-xs">
-                      <TableDropdown />
-                    </td>
-                  </tr>
-                )
-              })}
-              <tr>
-                <th className="flex items-center whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 text-left align-middle text-xs">
-                  <span
-                    className={
-                      'ml-3 font-bold ' + +(color === 'light' ? 'text-blueGray-600' : 'text-white')
-                    }
-                  >
-                    Tại sao tôi lại yêu em
-                  </span>
-                </th>
-                <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 align-middle text-xs">
-                  Đây là tác phẩm của tiểu thuyết gia Hoàng Quốc Việt
-                </td>
-                <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 align-middle text-xs">
-                  ahihi
-                </td>
-                <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 align-middle text-xs">
-                  22/12/2000
-                </td>
-                <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 align-middle text-xs">
-                  <div className="flex items-center">
-                    <span className="mr-2">60%</span>
-                    <div className="relative w-full">
-                      <div className="flex h-2 overflow-hidden rounded bg-red-200 text-xs">
-                        <div
-                          style={{ width: '60%' }}
-                          className="flex flex-col justify-center whitespace-nowrap bg-red-500 text-center text-white shadow-none"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td></td>
-
-                <td className="whitespace-nowrap border-t-0 border-l-0 border-r-0 p-4 px-6 text-right align-middle text-xs">
-                  <TableDropdown />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          
+          <Table columns={columns} dataSource={dataList?.data}
+            // scroll={{  y: 800 }}
+          />
         </div>
-        <AddArticleModal open={open} setOpen={setOpen} refetcch={()=>refetch()} />
+        {openAddModal&&<ArticleModal 
+          title="Thêm bài viết"
+          open={openAddModal} 
+          setOpen={setOpenAddModal} 
+          refetch={refetch} 
+          onFinish={onFinishAdd}
+          isLoading={isLoadingAdd}
+        />}
+        {openEditModal&&<ArticleModal 
+          title="Sửa bài viết"
+          open={openEditModal} 
+          setOpen={setOpenEditModal} 
+          refetch={refetch}
+          data={refDeleteArticle.current}
+        />}
+        <NotifyPopup 
+        title="Bạn có chắc sẽ xóa bài viết?"
+        message="Bài viết sẽ bị xóa vĩnh viễn"
+        // status={NOTIFY_POPUP_STATUS.WARNING}
+        onDelete={handleDelete}
+        onCancel={() => {
+          setVisibleDelete(false);
+        }}
+        visible={visibleDelete}
+        status="warning"
+        loading={isLoadingDelete}
+      />
       </div>{' '}
     </>
   )

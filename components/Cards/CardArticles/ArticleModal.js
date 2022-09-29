@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import 'antd/dist/antd.css'
 import { Button, Modal, Form, Input, InputNumber, Row, Col } from 'antd'
 import BasicInput from '@/components/antd/Input'
-import { addArticleRequest } from 'api/article'
 
 const layout = {
   labelCol: {
@@ -24,28 +23,20 @@ const validateMessages = {
     range: '${label} must be between ${min} and ${max}',
   },
 }
-const AddArticleModal = (props) => {
-  const { open, setOpen } = props
-  const [modalText, setModalText] = useState('Content of the modal')
+
+const ArticleModal = (props) => {
+  const { open, setOpen,title, onFinish,isLoading,data} = props
   const [form] = Form.useForm();
-  const { mutate: addArticle, isLoading: isLoading } = addArticleRequest();
   const handleOk = () => {
     form.submit()
   }
   const handleCancel = () => {
     setOpen(false)
   }
-  const onFinish = (values) => {
-    addArticle(values)
-    if(!isLoading) {
-    } setOpen(false)
-      props.refetch
-  }
-  console.log(process.env.SERVER_URL)
   return (
     <>
       <Modal
-        title="Add Articles"
+        title={title}
         open={open}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -58,14 +49,14 @@ const AddArticleModal = (props) => {
               Hủy
           </Button>
           <Button loading={isLoading} type= "primary" form="addArticlesForm" key="submit" htmlType="submit">
-              Thêm
+              Lưu
           </Button>
           </Row>
           
           ]}
         
       >
-       {open&&<Form
+       {<Form
           {...layout}
           name="addArticlesForm"
           onFinish={onFinish}
@@ -77,23 +68,37 @@ const AddArticleModal = (props) => {
         >
           <Row>
             <Col span={24}>
-              <BasicInput value= {form.getFieldValue("title")}
+              <BasicInput 
+              defaultValue={data?.title}
               
               label={"Tiêu đề"} required={true} name="title"  useLabel
               />
-              <BasicInput label={"Tóm tắt"} required={true} name="sumary" useLabel type="textarea"
+              <BasicInput
+              defaultValue={data?.sumary}
+              label={"Tóm tắt"} required={true} name="sumary" useLabel type="textarea"
               />
-              <BasicInput label={"Nội dung"} required={true} name="content"
+              <BasicInput 
+              defaultValue={data?.content}
+              
+              label={"Nội dung"} required={true} name="content"
                useLabel type="textarea"
                inputStyle={{height:"200px"}}
               />
                <BasicInput label={"Tags"} name="tag" useLabel
+              defaultValue={data?.tags
+              
+              }
+
               />
                <BasicInput label={"Ảnh"}  name="image" useLabel
+                defaultValue={data?.tags}
               />  
               <BasicInput label={"Tác giả"}  name="author" useLabel
+                defaultValue={data?.tags}
               />
                <BasicInput label={"Slug"} name="slug" useLabel
+                defaultValue={data?.author}
+
               />
             </Col>
           </Row>
@@ -103,4 +108,4 @@ const AddArticleModal = (props) => {
   )
 }
 
-export default AddArticleModal
+export default ArticleModal

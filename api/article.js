@@ -12,13 +12,29 @@ export   const  getArticle = () => {
     },
   );
 };
-export const addArticleRequest = () => {
-  return useMutation((body) => {
+export const addArticleRequest = ({onSuccess,onError}) => {
+  return useMutation(
+    (body) => {
     return axios.post(articleEnpoint,body)
     .then(response=>response)
-    .catch(console.log(err))
+    .catch(err=>console.log("eror là: ",err))
       
-  }, {});
+  }, {
+    onError:onError,
+    onSuccess:onSuccess
+  });
+};
+export const deleteArticleRequest = ({onSuccess,onError}) => {
+  return useMutation(
+    (body) => {
+    return axios.delete(`${articleEnpoint}/${body?.id}`, {body})
+    .then(response=>response)
+    .catch(err=>console.log("eror là: ",err))
+      
+  }, {
+    onError:onError,
+    onSuccess:onSuccess
+  });
 };
 
          
