@@ -29,4 +29,4 @@ export default function Blog({ posts, initialDisplayPosts, pagination }) {
     </>
   )
 }
-Blog.layout=LayoutWrapper
+Blog.layout = LayoutWrapper

@@ -53,4 +53,4 @@ export default function Tag({ posts, tag }) {
     </>
   )
 }
-Tag.layout=LayoutWrapper
+Tag.layout = LayoutWrapper

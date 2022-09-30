@@ -19,4 +19,4 @@ export default function About({ authorDetails }) {
     />
   )
 }
-About.layout=LayoutWrapper
+About.layout = LayoutWrapper

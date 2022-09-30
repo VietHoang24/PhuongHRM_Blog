@@ -42,4 +42,4 @@ export default function Tags({ tags }) {
     </>
   )
 }
-Tags.layout=LayoutWrapper
+Tags.layout = LayoutWrapper

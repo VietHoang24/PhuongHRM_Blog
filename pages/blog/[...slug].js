@@ -42,7 +42,7 @@ export async function getStaticProps({ params }) {
 
 export default function Blog({ post, authorDetails, prev, next }) {
   const { mdxSource, toc, frontMatter } = post
-  
+
   return (
     <>
       {frontMatter.draft !== true ? (
@@ -61,11 +61,11 @@ export default function Blog({ post, authorDetails, prev, next }) {
             Under Construction{''}
             <span role="img" aria-label="roadwork sign">
               🚧
-            </span> 
+            </span>
           </PageTitle>
         </div>
       )}
     </>
   )
 }
-Blog.layout=LayoutWrapper
+Blog.layout = LayoutWrapper

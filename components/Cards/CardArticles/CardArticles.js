@@ -18,8 +18,7 @@ import { notification } from 'antd'
 import NotifyPopup from '@/components/NotifyPopup'
 
 export default function CardTable({ color }) {
-  const { data: dataList, refetch } = getArticle()
-  console.log('data là: ', dataList?.data)
+  const { data: dataList, refetch, isLoading } = getArticle()
   const [openAddModal, setOpenAddModal] = useState(false)
   const [openEditModal, setOpenEditModal] = useState(false)
   const refDeleteArticle = useRef()
@@ -33,7 +32,6 @@ export default function CardTable({ color }) {
         <a
           onClick={() => {
             refDeleteArticle.current = dataList?.data.filter((item) => item.title === text)[0]
-            console.log('text là: ', refDeleteArticle.current)
             setOpenEditModal(true)
           }}
         >
@@ -49,19 +47,19 @@ export default function CardTable({ color }) {
     {
       title: 'Tags',
       key: 'tags',
-      dataIndex: 'tags',
-      render: (_, { tags }) => (
+      dataIndex: 'tag',
+      render: (_, { tag }) => (
         <>
-          {tags?.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green'
+          {tag?.map((item) => {
+            let color = item.length > 5 ? 'geekblue' : 'green'
 
-            if (tag === 'loser') {
+            if (item === 'loser') {
               color = 'volcano'
             }
 
             return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
+              <Tag color={color} key={item}>
+                {item.toUpperCase()}
               </Tag>
             )
           })}
@@ -141,12 +139,10 @@ export default function CardTable({ color }) {
   }
   const handleUpdate = (value) => {
     let itemSelected = refDeleteArticle.current
-    console.log(itemSelected, value)
     updateArticle({ ...value, id: itemSelected._id })
     setVisibleDelete(false)
   }
   const handleOpenAddModal = () => {
-    console.log('ahhuh')
     setOpenAddModal(true)
   }
   const { mutate: addArticle, isLoading: isLoadingAdd } = addArticleRequest({
@@ -196,6 +192,7 @@ export default function CardTable({ color }) {
           <Table
             columns={columns}
             dataSource={dataList?.data}
+            rowKey={(record) => record.date}
             // scroll={{  y: 800 }}
           />
         </div>

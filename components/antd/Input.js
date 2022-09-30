@@ -1,8 +1,8 @@
-import { Form, Input, InputNumber } from 'antd';
-import { LabelTooltipType } from 'antd/lib/form/FormItemLabel';
+import { Form, Input, InputNumber } from 'antd'
+import { LabelTooltipType } from 'antd/lib/form/FormItemLabel'
 
 const BasicInput = (props) => {
-  let InputContent;
+  let InputContent
 
   switch (props.type) {
     case 'number':
@@ -28,9 +28,9 @@ const BasicInput = (props) => {
           min={props.min}
           max={props.max}
         />
-      );
+      )
 
-      break;
+      break
     case 'password':
       InputContent = (
         <Input.Password
@@ -44,8 +44,8 @@ const BasicInput = (props) => {
           style={props.inputStyle}
           onChange={props.onChange}
         />
-      );
-      break;
+      )
+      break
     case 'textarea':
       InputContent = (
         <Input.TextArea
@@ -64,8 +64,8 @@ const BasicInput = (props) => {
           size="large"
           style={props.inputStyle}
         />
-      );
-      break;
+      )
+      break
     default:
       InputContent = (
         <Input
@@ -89,7 +89,7 @@ const BasicInput = (props) => {
           size="large"
           style={props.inputStyle}
         />
-      );
+      )
   }
   return (
     <Form.Item
@@ -111,6 +111,6 @@ const BasicInput = (props) => {
     >
       {InputContent}
     </Form.Item>
-  );
-};
-export default BasicInput;
+  )
+}
+export default BasicInput

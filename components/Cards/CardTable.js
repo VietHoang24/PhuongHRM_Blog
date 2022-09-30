@@ -8,7 +8,7 @@ import TableDropdown from 'components/Dropdowns/TableDropdown.js'
 export default function CardArticles({ color }) {
   return (
     <>
-      <div6
+      <div
         className={
           'relative mb-6 flex w-full min-w-0 flex-col break-words rounded shadow-lg ' +
           (color === 'light' ? 'text-blueGray-700 bg-white' : 'bg-blueGray-700 text-white')

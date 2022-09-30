@@ -1,10 +1,7 @@
-import {
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons';
-import { Modal } from 'antd';
-import React from 'react';
-import { Button } from 'antd';
+import { CheckCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { Modal } from 'antd'
+import React from 'react'
+import { Button } from 'antd'
 
 // interface IProps {
 //   status: 'success' | 'warning' | 'error';
@@ -36,12 +33,11 @@ const NotifyPopup = ({
   labelBtnDelete,
   loading,
 }) => {
-
   return (
     <Modal
       closeIcon={<></>}
       width={width}
-      visible={visible}
+      open={visible}
       className={`mainModal ${className}`}
       footer={false}
       closable={closable}
@@ -49,63 +45,40 @@ const NotifyPopup = ({
       afterClose={afterClose}
     >
       {status === 'success' && (
-        <div >
+        <div>
           <CheckCircleOutlined />
-          <div > {title} </div>
+          <div> {title} </div>
           <div> {message} </div>
           <div>
-            <Button
-              title={t('closeText')}
-              
-              onClick={onCancel}
-            />
+            <Button title="Đóng" onClick={onCancel} />
           </div>
         </div>
       )}
       {status === 'error' && (
-        <div >
-          <ExclamationCircleOutlined
-            
-          />
+        <div>
+          <ExclamationCircleOutlined />
           <div> {title} </div>
           <div> {message} </div>
           <div>
-            <Button
-              title={t('cancelText')}
-       
-              onClick={onCancel}
-            />
-            <Button
-              title={t('tryAgainText')}
-           
-              onClick={onTryAgain}
-            />
+            <Button title="Hủy" onClick={onCancel} />
+            <Button title="Thử Lại" onClick={onTryAgain} />
           </div>
         </div>
       )}
       {status === 'warning' && (
-        <div >
-          <ExclamationCircleOutlined
-           
-          />
+        <div>
+          <ExclamationCircleOutlined />
           <div> {title} </div>
           <div> {message} </div>
           <div>
-            <Button
-              onClick={onCancel}
-            >
-              Hủy
-            </Button>
-            <Button
-              onClick={onDelete}
-              loading={loading}
-            >
-              {labelBtnDelete??<>Xóa</>}
+            <Button onClick={onCancel}>Hủy</Button>
+            <Button onClick={onDelete} loading={loading}>
+              {labelBtnDelete ?? <>Xóa</>}
             </Button>
           </div>
         </div>
       )}
     </Modal>
-  );
-};
-export default NotifyPopup;
+  )
+}
+export default NotifyPopup

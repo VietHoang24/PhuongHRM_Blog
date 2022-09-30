@@ -1,5 +1,5 @@
-import { MoreOutlined } from '@ant-design/icons';
-import { Dropdown, Menu, Space } from 'antd';
+import { MoreOutlined } from '@ant-design/icons'
+import { Dropdown, Menu, Space } from 'antd'
 // export interface MenuOptionsProps {
 //   trigger: ['click' | 'hover' | 'contextMenu'];
 //   items: ItemType[];
@@ -15,33 +15,25 @@ import { Dropdown, Menu, Space } from 'antd';
 //   label: string | ReactNode;
 // }
 
-const 
-
-MenuOptions = (props) => {
+const MenuOptions = (props) => {
   const getItemHandler = (e) => {
-    props.itemHandler(e, props.itemSelected);
-  };
+    props.itemHandler(e, props.itemSelected)
+  }
   const menu = (
     <Menu
       items={props.items}
       onClick={(e) => {
-        e.domEvent.stopPropagation();
-        getItemHandler(e);
+        e.domEvent.stopPropagation()
+        getItemHandler(e)
       }}
     />
-  );
+  )
   return (
-    <Dropdown
-      overlay={menu}
-      trigger={props.trigger}
-      placement={props.placement || "bottomLeft"}
-    >
+    <Dropdown overlay={menu} trigger={props.trigger} placement={props.placement || 'bottomLeft'}>
       <span onClick={(e) => e.stopPropagation()}>
-        <Space className="cursor-pointer">
-          {props.icon || <MoreOutlined />}
-        </Space>
+        <Space className="cursor-pointer">{props.icon || <MoreOutlined />}</Space>
       </span>
     </Dropdown>
-  );
-};
-export default MenuOptions;
+  )
+}
+export default MenuOptions

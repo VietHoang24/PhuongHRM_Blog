@@ -9,6 +9,7 @@
     "serve": "next start -p 3001",
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir components --dir lib --dir layouts --dir scripts",
+    "format": "prettier --write \"src/**/*.js\" \"test/**/*.js\"",
     "prepare": "husky install"
   },
   "dependencies": {

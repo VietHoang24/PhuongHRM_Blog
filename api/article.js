@@ -1,11 +1,18 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 const articleEnpoint = 'http://localhost:3333/articles'
+
+export const getArticleStatic = () => axios.get(articleEnpoint)
+.then((response) => { return JSON.stringify(response) })
+
+// () => axios.get(articleEnpoint).then((response) => { return response})
 export const getArticle = () => {
-  return useQuery(['get-articles'], () => axios.get(articleEnpoint).then((response) => response), {
+  return useQuery(['get-articles'], () => axios.get(articleEnpoint)
+  .then((response) => { return response }), {
     refetchOnWindowFocus: false,
   })
 }
+  
 export const addArticleRequest = ({ onSuccess, onError }) => {
   return useMutation(
     (body) => {

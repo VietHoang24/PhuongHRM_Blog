@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 function MapExample() {
   // const mapRef = React.useRef(null);
@@ -80,11 +80,11 @@ function MapExample() {
   // });
   return (
     <>
-      <div className="relative w-full rounded h-600-px">
-        <div className="rounded h-full"  />
+      <div className="h-600-px relative w-full rounded">
+        <div className="h-full rounded" />
       </div>
     </>
-  );
+  )
 }
 
-export default MapExample;
+export default MapExample

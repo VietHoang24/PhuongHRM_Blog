@@ -30,6 +30,7 @@ const ArticleModal = (props) => {
   const handleOk = () => {
     form.submit()
   }
+  console.log('value form là: ', form.defaultValue)
   const handleCancel = () => {
     setOpen(false)
   }
@@ -37,13 +38,14 @@ const ArticleModal = (props) => {
   return (
     <>
       <Modal
+        key={'modal-add-articles hihi'}
         title={title}
         open={open}
         onOk={handleOk}
         onCancel={handleCancel}
         width={1000}
         footer={[
-          <Row justify="end">
+          <Row justify="end" key={"row ne hihi"}>
             <Button form="addArticlesForm" key="submit" onClick={handleCancel}>
               Hủy
             </Button>
@@ -72,14 +74,14 @@ const ArticleModal = (props) => {
             <Row>
               <Col span={24}>
                 <BasicInput
-                  defaultValue={data?.title}
+                  initialValueForm={data?.title}
                   label={'Tiêu đề'}
                   required={true}
                   name="title"
                   useLabel
                 />
                 <BasicInput
-                  defaultValue={data?.sumary}
+                  initialValueForm={data?.sumary}
                   label={'Tóm tắt'}
                   required={true}
                   name="sumary"
@@ -87,7 +89,7 @@ const ArticleModal = (props) => {
                   type="textarea"
                 />
                 <BasicInput
-                  defaultValue={data?.content}
+                  initialValueForm={data?.content}
                   label={'Nội dung'}
                   required={true}
                   name="content"
@@ -95,10 +97,15 @@ const ArticleModal = (props) => {
                   type="textarea"
                   inputStyle={{ height: '200px' }}
                 />
-                <BasicInput label={'Tags'} name="tag" useLabel defaultValue={data?.tags} />
-                <BasicInput label={'Ảnh'} name="image" useLabel defaultValue={data?.tags} />
-                <BasicInput label={'Tác giả'} name="author" useLabel defaultValue={data?.tags} />
-                <BasicInput label={'Slug'} name="slug" useLabel defaultValue={data?.author} />
+                <BasicInput label={'Tags'} name="tag" useLabel initialValueForm={data?.tags} />
+                <BasicInput label={'Ảnh'} name="image" useLabel initialValueForm={data?.tags} />
+                <BasicInput
+                  label={'Tác giả'}
+                  name="author"
+                  useLabel
+                  initialValueForm={data?.tags}
+                />
+                <BasicInput label={'Slug'} name="slug" useLabel initialValueForm={data?.author} />
               </Col>
             </Row>
           </Form>

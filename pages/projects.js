@@ -33,4 +33,4 @@ export default function Projects() {
     </>
   )
 }
-Projects.layout=LayoutWrapper
+Projects.layout = LayoutWrapper

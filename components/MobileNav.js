@@ -6,20 +6,19 @@ const MobileNav = () => {
   const [navShow, setNavShow] = useState(false)
 
   const onToggleNav = () => {
-        if(!navShow){
-          document.getElementById("navbarMobile").style.display="block"
-          document.body.style.overflow = 'hidden'
-          setNavShow(!navShow)
-        }
-        else{
-          document.getElementById("navbarMobile").style.display="none"
-          document.body.style.overflow = 'auto'
-          setNavShow(!navShow)
-        }
+    if (!navShow) {
+      document.getElementById('navbarMobile').style.display = 'block'
+      document.body.style.overflow = 'hidden'
+      setNavShow(!navShow)
+    } else {
+      document.getElementById('navbarMobile').style.display = 'none'
+      document.body.style.overflow = 'auto'
+      setNavShow(!navShow)
+    }
   }
 
   return (
-    <div className="sm:hidden" >
+    <div className="sm:hidden">
       <button
         type="button"
         className="ml-1 mr-1 h-8 w-8 rounded py-1"
@@ -40,8 +39,8 @@ const MobileNav = () => {
         </svg>
       </button>
       <div
-        id='navbarMobile'
-        className={`hidden fixed top-0 left-0 z-10 h-full w-full transform bg-black opacity-90 duration-300 ease-in-out dark:bg-gray-800 ${
+        id="navbarMobile"
+        className={`fixed top-0 left-0 z-10 hidden h-full w-full transform bg-black opacity-90 duration-300 ease-in-out dark:bg-gray-800 ${
           navShow ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -52,7 +51,6 @@ const MobileNav = () => {
             aria-label="Toggle Menu"
             onClick={onToggleNav}
           >
-       
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"

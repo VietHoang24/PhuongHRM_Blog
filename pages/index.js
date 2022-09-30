@@ -1,43 +1,48 @@
+import LayoutWrapper from '@/components/LayoutWrapper'
 import Link from '@/components/Link'
+import NewsletterForm from '@/components/NewsletterForm'
 import { PageSEO } from '@/components/SEO'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
-import { getAllFilesFrontMatter } from '@/lib/mdx'
 import formatDate from '@/lib/utils/formatDate'
-import React from 'react'
-import NewsletterForm from '@/components/NewsletterForm'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import { getArticle } from '../api/article'
-import LayoutWrapper from '@/components/LayoutWrapper'
+import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query'
+import React, { useEffect, useState } from 'react'
+import { getArticle,getArticleStatic } from '../api/article'
 const MAX_DISPLAY = 5
 export async function getStaticProps() {
-  const posts = await getAllFilesFrontMatter('blog')
-
-  return { props: { posts } }
+  // const posts = await getAllFilesFrontMatter('blog')
+  const queryClient = new QueryClient()
+  await queryClient.prefetchQuery(['get-articles'], getArticleStatic)
+  return {
+    props: { dehydratedState: dehydrate(queryClient) },
+  }
 }
-
-const Home =({ posts }) =>{
-
+const Home = () => {
+  // const { data: posts } = getArticle()
+  let posts
+  const  {data, isLoading} = getArticle()
+  if(data){
+    posts=JSON.parse(data)
+  }
   return (
-    <div> 
+    <div>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="space-y-2 pt-6 pb-8 md:space-y-5">
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            Latest
+            Mới nhất
           </h1>
           <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
             {siteMetadata.description}
           </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          {!posts.length && 'No posts found.'}
-          {posts.slice(0, MAX_DISPLAY).map((frontMatter) => {
-          {/* {dataPage?.map((frontMatter) => { */}
-            const { slug, date, title, summary, tags } = frontMatter
+          {!posts?.data?.length && 'No posts found.'}
+          {/* {posts.slice(0, MAX_DISPLAY).map((frontMatter) => { */}
+          {posts?.data?.map((frontMatter) => {
+            const { slug, date, title, sumary, tag } = frontMatter
             return (
-              <li key={slug} className="py-12">
+              <li key={date} className="py-12">
                 <article>
                   <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
                     <dl>
@@ -58,13 +63,13 @@ const Home =({ posts }) =>{
                             </Link>
                           </h2>
                           <div className="flex flex-wrap">
-                            {tags?.map((tag) => (
-                              <Tag key={tag} text={tag} />
+                            {tag?.map((tagItem) => (
+                              <Tag key={tagItem} text={tagItem} />
                             ))}
                           </div>
                         </div>
                         <div className="prose max-w-none text-gray-500 dark:text-gray-400">
-                          {summary}
+                          {sumary}
                         </div>
                       </div>
                       <div className="text-base font-medium leading-6">
@@ -73,7 +78,7 @@ const Home =({ posts }) =>{
                           className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                           aria-label={`Read "${title}"`}
                         >
-                          Read more &rarr;
+                          Xem thêm &rarr;
                         </Link>
                       </div>
                     </div>
@@ -84,7 +89,7 @@ const Home =({ posts }) =>{
           })}
         </ul>
       </div>
-      {posts.length > MAX_DISPLAY && (
+      {posts?.data?.length > MAX_DISPLAY && (
         <div className="flex justify-end text-base font-medium leading-6">
           <Link
             href="/blog"
@@ -103,6 +108,6 @@ const Home =({ posts }) =>{
     </div>
   )
 }
-Home.layout = LayoutWrapper;
+Home.layout = LayoutWrapper
 
 export default Home
