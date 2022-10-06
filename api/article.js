@@ -1,18 +1,60 @@
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useInfiniteQuery, QueryClient } from '@tanstack/react-query'
 import axios from 'axios'
-const articleEnpoint = 'http://localhost:3333/articles'
+const LIMIT = 18;
+export const articleEnpoint = 'http://localhost:3333/articles'
 
-export const getArticleStatic = () => axios.get(articleEnpoint)
-.then((response) => { return JSON.stringify(response) })
-
+export const getArticleStatic = () =>{
+  const response = fetch(articleEnpoint,{ method: 'GET',})
+  .then((response) => { return response.json() })
+  .then((data) => {
+    return data
+  })
+  return response;
+}
+export const getArticleId= async ()=>{
+  const posts= await getArticleStatic()
+  if(posts.pages)
+  posts?.map(item=>{
+    return {params:{
+      id: `${item._id}`
+    }}
+  })
+ return posts
+}
 // () => axios.get(articleEnpoint).then((response) => { return response})
 export const getArticle = () => {
-  return useQuery(['get-articles'], () => axios.get(articleEnpoint)
-  .then((response) => { return response }), {
+  return useQuery(['get-articles1'],getArticleStatic, {
     refetchOnWindowFocus: false,
   })
 }
-  
+export const useInfArticles = () =>
+  useInfiniteQuery(
+    ['get-articles'],
+    () => fetch(articleEnpoint,{ method: 'GET',})
+  .then((response) => { return response.json() }).then((data) => {
+    return data
+  }),
+    {
+      keepPreviousData: true,
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage?.length < LIMIT ? undefined : allPages?.length * LIMIT,
+    },
+  );
+export const useInfGetArticleById = (id) =>
+  useInfiniteQuery(
+    ['get-articles-by-id'],
+    () => fetch(`${articleEnpoint}/${id}`,{ method: 'GET',})
+  .then((response) => { return response.json() }).then((data) => {
+    return data
+  }),
+    {
+      keepPreviousData: true,
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage?.length < LIMIT ? undefined : allPages?.length * LIMIT,
+    },
+  );
+
+
 export const addArticleRequest = ({ onSuccess, onError }) => {
   return useMutation(
     (body) => {

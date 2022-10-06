@@ -30,7 +30,6 @@ const ArticleModal = (props) => {
   const handleOk = () => {
     form.submit()
   }
-  console.log('value form là: ', form.defaultValue)
   const handleCancel = () => {
     setOpen(false)
   }

@@ -6,24 +6,38 @@ import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import formatDate from '@/lib/utils/formatDate'
 import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query'
+import { articleEnpoint } from 'api/enpoint'
 import React, { useEffect, useState } from 'react'
-import { getArticle,getArticleStatic } from '../api/article'
+import { getArticle,getArticleId,getArticleStatic, useInfArticles } from '../api/article'
 const MAX_DISPLAY = 5
+// export async function getStaticProps() {
+//   // const posts = await getAllFilesFrontMatter('blog')
+//   const queryClient = new QueryClient()
+//   await queryClient.prefetchQuery(['get-articles'], getArticleStatic)
+//   return {
+//     props: { dehydratedState: dehydrate(queryClient) },
+//   }
+// }
 export async function getStaticProps() {
-  // const posts = await getAllFilesFrontMatter('blog')
-  const queryClient = new QueryClient()
-  await queryClient.prefetchQuery(['get-articles'], getArticleStatic)
+  const queryClient = new QueryClient();
+  await queryClient.fetchInfiniteQuery(['get-articles'],getArticleStatic);
+
+  // https://github.com/tannerlinsley/react-query/issues/1458
+  const dehydratedState = JSON.parse(JSON.stringify(dehydrate(queryClient)));
+
   return {
-    props: { dehydratedState: dehydrate(queryClient) },
-  }
+    props: {
+      dehydratedState,
+    },
+  };
 }
 const Home = () => {
-  // const { data: posts } = getArticle()
   let posts
-  const  {data, isLoading} = getArticle()
-  if(data){
-    posts=JSON.parse(data)
-  }
+  const  {data , isLoading} = useInfArticles()
+  posts=data?.pages[0]
+  // const abc = getArticleId();
+  // console.log("abcd:",abc)
+  // console.log("data là: ",data)
   return (
     <div>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
@@ -37,10 +51,10 @@ const Home = () => {
           </p>
         </div>
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-          {!posts?.data?.length && 'No posts found.'}
+          {!posts?.length && 'No posts found.'}
           {/* {posts.slice(0, MAX_DISPLAY).map((frontMatter) => { */}
-          {posts?.data?.map((frontMatter) => {
-            const { slug, date, title, sumary, tag } = frontMatter
+          {posts?.map((frontMatter) => {
+            const { slug, date, title, sumary, tag,_id } = frontMatter
             return (
               <li key={date} className="py-12">
                 <article>
@@ -56,7 +70,7 @@ const Home = () => {
                         <div>
                           <h2 className="text-2xl font-bold leading-8 tracking-tight">
                             <Link
-                              href={`/blog/${slug}`}
+                              href={`/blog/${_id}`}
                               className="text-gray-900 dark:text-gray-100"
                             >
                               {title}
@@ -74,7 +88,7 @@ const Home = () => {
                       </div>
                       <div className="text-base font-medium leading-6">
                         <Link
-                          href={`/blog/${slug}`}
+                          href={`/blog/${_id}`}
                           className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                           aria-label={`Read "${title}"`}
                         >
@@ -89,7 +103,7 @@ const Home = () => {
           })}
         </ul>
       </div>
-      {posts?.data?.length > MAX_DISPLAY && (
+      {posts?.length > MAX_DISPLAY && (
         <div className="flex justify-end text-base font-medium leading-6">
           <Link
             href="/blog"
