@@ -1,24 +1,25 @@
-import React, { useRef, useState } from 'react'
 import PropTypes from 'prop-types'
+import React, { useRef, useState } from 'react'
 import { IoMdAddCircleOutline } from 'react-icons/io'
 // components
-import { Space, Table, Tag } from 'antd'
+import { Table, Tag } from 'antd'
 
-import TableDropdown from 'components/Dropdowns/TableDropdown.js'
+import MenuOptions from '@/components/MenuOpstions'
+import NotifyPopup from '@/components/NotifyPopup'
+import { notification } from 'antd'
 import {
   addArticleRequest,
   deleteArticleRequest,
   getArticle,
   updateArticleRequest,
+  useInfArticles
 } from 'api/article'
 import ArticleModal from './ArticleModal'
-import { Modal } from 'antd'
-import MenuOptions from '@/components/MenuOpstions'
-import { notification } from 'antd'
-import NotifyPopup from '@/components/NotifyPopup'
 
 export default function CardTable({ color }) {
-  const { data: dataList, refetch, isLoading } = getArticle()
+  const { data, refetch, isLoading } = useInfArticles()
+  const dataList=data?.pages[0]
+  console.log(dataList)
   const [openAddModal, setOpenAddModal] = useState(false)
   const [openEditModal, setOpenEditModal] = useState(false)
   const refDeleteArticle = useRef()
@@ -31,7 +32,7 @@ export default function CardTable({ color }) {
       render: (text) => (
         <a
           onClick={() => {
-            refDeleteArticle.current = dataList?.data.filter((item) => item.title === text)[0]
+            refDeleteArticle.current = dataList.filter((item) => item.title === text)[0]
             setOpenEditModal(true)
           }}
         >
@@ -191,7 +192,7 @@ export default function CardTable({ color }) {
 
           <Table
             columns={columns}
-            dataSource={dataList?.data}
+            dataSource={dataList}
             rowKey={(record) => record.date}
             // scroll={{  y: 800 }}
           />

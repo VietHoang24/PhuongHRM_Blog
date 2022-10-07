@@ -3,8 +3,11 @@ import axios from 'axios'
 const LIMIT = 18;
 export const articleEnpoint = 'http://localhost:3333/articles'
 
-export const getArticleStatic = () =>{
-  const response = fetch(articleEnpoint,{ method: 'GET',})
+export const getArticleStatic = (params) =>{
+  let endpoint=articleEnpoint
+  if(params?.id) endpoint=`${articleEnpoint}/${params.id}`
+
+  const response = fetch(endpoint,{ method: 'GET',})
   .then((response) => { return response.json() })
   .then((data) => {
     return data
@@ -13,17 +16,19 @@ export const getArticleStatic = () =>{
 }
 export const getArticleId= async ()=>{
   const posts= await getArticleStatic()
-  if(posts.pages)
-  posts?.map(item=>{
-    return {params:{
-      id: `${item._id}`
-    }}
-  })
- return posts
+  let articleId=[]
+    if (posts){
+    articleId = posts?.map(item=>({
+    params:{
+        id: [`${item._id}`],
+    }
+  }))
+}
+ return articleId
 }
 // () => axios.get(articleEnpoint).then((response) => { return response})
 export const getArticle = () => {
-  return useQuery(['get-articles1'],getArticleStatic, {
+  return useQuery(['get-articles1'],()=>getArticleStatic(), {
     refetchOnWindowFocus: false,
   })
 }

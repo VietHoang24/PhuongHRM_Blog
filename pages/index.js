@@ -5,10 +5,9 @@ import { PageSEO } from '@/components/SEO'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import formatDate from '@/lib/utils/formatDate'
-import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query'
-import { articleEnpoint } from 'api/enpoint'
-import React, { useEffect, useState } from 'react'
-import { getArticle,getArticleId,getArticleStatic, useInfArticles } from '../api/article'
+import { dehydrate, QueryClient } from '@tanstack/react-query'
+import React from 'react'
+import { getArticleStatic, useInfArticles } from '../api/article'
 const MAX_DISPLAY = 5
 // export async function getStaticProps() {
 //   // const posts = await getAllFilesFrontMatter('blog')
